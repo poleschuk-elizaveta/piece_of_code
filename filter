@@ -1,7 +1,6 @@
 function FilterReacts() {
     var ths = this;
-    var tds = null;
-    var selTD = null;
+    var trs = null;
     this.create_tag = function (tag_name, text_into_tag, parent_elem, class_name) {
         var tag = document.createElement(tag_name);
         tag.className = class_name;
@@ -12,7 +11,7 @@ function FilterReacts() {
     this.filter_input_init = function(filter_input) {
       add_eventer(filter_input, "keydown", function (event) {
         if (event.keyCode==13) { //если enter нажат
-            event.preventDefault();//запрет на дальнейшее распространение
+            //event.preventDefault();//запрет на дальнейшее распространение
             ths.filter(filter_input.value);
             if (filter_input.value){
                 ths.create_tag('div', filter_input.value, document.getElementById('tags'), "tag_style");
@@ -22,22 +21,31 @@ function FilterReacts() {
         }
       });
     };
-    this.filter = function(value){
-        reg = new RegExp(value,"g","i");
-        if(tds===null){
-            tds=new Array();
-            tds1 = $('#table_place td');
-            for(var i=1; i<tds1.length; i++){
-                //console.log("________tds "+ tds1[i].innerHTML);
-                if($(tds1[i]).text().match(reg)===null){
-                    console.log("________ null");
-                    //tableShower.hideElement(tds1[i].parentNode);
+    this.filter = function(value) {
+        var val = value.trim(); //trim возвращает исходную строку с удаленными начальными и конечными пробелами и символами конца строки.
+        reg = new RegExp(value, "g", "i");
+        if (trs === null) {
+            trs = $('#table_place tr');
+            console.log('__before if !val '+!val);
+            if (val) {
+                console.log('__val '+val);
+                for (var k = 1; k < trs.length; k++) {
+                    tableShower.hideElement(trs[k]);
+                    for (var i = 0; i < trs[k].childNodes.length; i++) {
+                        tds = trs[k].childNodes;
+                        if (tds[i].textContent.match(reg) !== null) {
+                            tableShower.showElement(trs[k]);
+                            continue;
+                        }
+                    }
+                    tableShower.showElement(trs[0]);
                 }
-                else console.log("________ not null"+ '['+i+'] '+tds1[i].text);
+            } else {
+                console.log('__!val '+!val);
+                for (k = 0; k < trs.length; k++) {
+                    tableShower.showElement(trs[k]);
+                }
             }
         }
     }
 }
-
-var filterReacts = new FilterReacts();
-filterReacts.filter_input_init(filter_input);
