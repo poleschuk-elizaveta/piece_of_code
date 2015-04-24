@@ -1,0 +1,43 @@
+function FilterReacts() {
+    var ths = this;
+    var tds = null;
+    var selTD = null;
+    this.create_tag = function (tag_name, text_into_tag, parent_elem, class_name) {
+        var tag = document.createElement(tag_name);
+        tag.className = class_name;
+        tag.innerHTML = text_into_tag;
+        return parent_elem.appendChild(tag);
+    };
+
+    this.filter_input_init = function(filter_input) {
+      add_eventer(filter_input, "keydown", function (event) {
+        if (event.keyCode==13) { //если enter нажат
+            event.preventDefault();//запрет на дальнейшее распространение
+            ths.filter(filter_input.value);
+            if (filter_input.value){
+                ths.create_tag('div', filter_input.value, document.getElementById('tags'), "tag_style");
+            }
+            //editReacts.update_current_table(table_place);
+            return false;
+        }
+      });
+    };
+    this.filter = function(value){
+        reg = new RegExp(value,"g","i");
+        if(tds===null){
+            tds=new Array();
+            tds1 = $('#table_place td');
+            for(var i=1; i<tds1.length; i++){
+                //console.log("________tds "+ tds1[i].innerHTML);
+                if($(tds1[i]).text().match(reg)===null){
+                    console.log("________ null");
+                    //tableShower.hideElement(tds1[i].parentNode);
+                }
+                else console.log("________ not null"+ '['+i+'] '+tds1[i].text);
+            }
+        }
+    }
+}
+
+var filterReacts = new FilterReacts();
+filterReacts.filter_input_init(filter_input);
